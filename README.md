@@ -2,8 +2,10 @@
  Gofs is a small file server for Browsing specify local folder and files.
 
 ## PreRequire
-- [Git](https://git-scm.com/) - Distributed version control system.
-- [Golang](https://golang.org/) - Programming language.
+- Install [Git](https://git-scm.com/) - Distributed version control system.
+- Install [Golang](https://golang.org/) - Programming language.
+  - For Windows OS: Make sure `%GOPATH%\bin` is inclouded in `%PATH%` environmental variables.
+  - For Linux OS: Make sure `$GOPATH/bin` is inclouded in `$PATH` environmental variables.
 
 ## Install
 ```golang
@@ -12,22 +14,22 @@ $> go install github.com/oneleo/gofs
 ```
 
 ## Usage
-- Start this file server listen on port ":80" for browse "./" current folder.
+1. Start this file server listen on port ":80" for browse "./" current folder.
 ```bash
 $> gofs
 ```
 
-- Start this file server listen on port ":80" for browse "./" current folder, and open in browser.
+2. Start this file server listen on port ":80" for browse "./" current folder, and open in browser.
 ```bash
 $> gofs -b
 ```
 
-- Start this file server listen on port ":8081" for browse "./www" specify folder, and open in browser.
+3. Start this file server listen on port ":8081" for browse "./www" specify folder, and open in browser.
 ```bash
 $> gofs -p 8081 -f ./www -b
 ```
 
-- Help message
+4. Help message
 ```bash
 $> gofs -h
 OR
