@@ -38,13 +38,13 @@ func init() {
 	flag.Usage = func() {
 		// template: go help doc
 		fmt.Fprintf(os.Stderr, "Gofs is a small file server for Browsing specify local folder and files.\n")
-		fmt.Fprintf(os.Stderr, "Usage:\n\n\tgofs [-p port] [-f folder] [-b ture]\n\n")
+		fmt.Fprintf(os.Stderr, "Usage:\n\n\tgofs [-p port] [-f folder] [-b]\n\n")
 		fmt.Fprintf(os.Stderr, "Flags:\n")
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "\nExamples:\n")
 		fmt.Fprintf(os.Stderr, "  gofs\n\tStart this file server listen on port \":80\" for browse \"./\" current folder.\n")
 		fmt.Fprintf(os.Stderr, "  gofs -b\n\tStart this file server listen on port \":80\" for browse \"./\" current folder, and open in browser.\n")
-		fmt.Fprintf(os.Stderr, "  gofs -p 8081 -f ./www -b\n\tStart this file server listen on port \":8081\" for browse \"./www\" specify folder, and open in browser.")
+		fmt.Fprintf(os.Stderr, "  gofs -p 8081 -f ./www -b\n\tStart this file server listen on specify port \":8081\" for browse \"./www\" specify folder, and open in browser.")
 	}
 }
 
@@ -84,7 +84,7 @@ func main() {
 
 	h := http.FileServer(http.Dir(f))
 	p := fmt.Sprintf(":%d", *port)
-	fmt.Print("File Server is Started to listen on localhost", p, " for browse ", f, "\nPlease press CTRL + C to close...\n")
+	fmt.Print("File Server is Started to listen on localhost", p, " for browse ", f, "\nPlease press CTRL + C to finish this server...\n")
 	// If '-b' flag is set, open URI in browser.
 	if *browse == true {
 		go openURI("http://127.0.0.1" + p)

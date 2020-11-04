@@ -39,7 +39,7 @@ $> gofs -h
 Gofs is a small file server for Browsing specify local folder and files.
 Usage:
 
-        gofs [-p port] [-f folder] [-b ture]
+        gofs [-p port] [-f folder] [-b]
 
 Flags:
   -b    Open URL in browser (shorthand)
@@ -54,7 +54,7 @@ Examples:
   gofs -b
         Start this file server listen on port ":80" for browse "./" current folder, and open in browser.
   gofs -p 8081 -f ./www -b
-        Start this file server listen on port ":8081" for browse "./www" specify folder, and open in browser.
+        Start this file server listen on specify port ":8081" for browse "./www" specify folder, and open in browser.
 ```
 
 ## References
