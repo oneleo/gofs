@@ -1,13 +1,13 @@
 # gofs
  Gofs is a small file server for Browsing specify local folder and files.
 
-
 ## PreRequire
 - [Git](https://git-scm.com/) - Distributed version control system.
 - [Golang](https://golang.org/) - Programming language.
 
 ## Install
 ```golang
+$> go get -u github.com/oneleo/gofs
 $> go install github.com/oneleo/gofs
 ```
 
