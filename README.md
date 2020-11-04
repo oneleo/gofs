@@ -14,17 +14,17 @@ $> go install github.com/oneleo/gofs
 ```
 
 ## Usage
-1. Start this file server listen on port ":80" for browse "./" current folder.
+1. Start this file server listen on default port `:80` for browse `./` current folder:
 ```bash
 $> gofs
 ```
 
-2. Start this file server listen on port ":80" for browse "./" current folder, and open in browser.
+2. Start this file server listen on default port `:80` for browse `./` current folder, and open in browser:
 ```bash
 $> gofs -b
 ```
 
-3. Start this file server listen on port ":8081" for browse "./www" specify folder, and open in browser.
+3. Start this file server listen on specified port `:8081` for browse specified `./www` folder, and open in browser:
 ```bash
 $> gofs -p 8081 -f ./www -b
 ```
