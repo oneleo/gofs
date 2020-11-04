@@ -52,7 +52,6 @@ func init() {
 func openURI(uri string) {
 	var c *string = new(string)
 	var args *[]string = new([]string)
-	var err *error = new(error)
 
 	// Obtain OS type.
 	switch runtime.GOOS {
@@ -68,15 +67,10 @@ func openURI(uri string) {
 	default:
 		log.Fatal("Unsupported operating system\n")
 	}
-
 	*args = append(*args, uri)
-	if *err != nil {
-		log.Fatal(*err, "\n")
-	}
-
-	*err = exec.Command(*c, *args...).Start()
-	if *err != nil {
-		log.Fatal(*err, "\n")
+	// Open URI in browser.
+	if err := exec.Command(*c, *args...).Start(); err != nil {
+		log.Fatal(err, "\n")
 	}
 }
 
