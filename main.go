@@ -49,6 +49,7 @@ func init() {
 }
 
 // openURI will open URI in browser.
+// Reconmannd to use this new project: https://github.com/toqueteos/webbrowser
 func openURI(uri string) {
 	var c *string = new(string)
 	var args *[]string = new([]string)
