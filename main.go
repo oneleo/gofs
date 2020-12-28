@@ -1,20 +1,29 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"runtime"
+	"syscall"
+	"time"
 )
 
 var (
 	port   *int64  = new(int64)
 	folder *string = new(string)
 	browse *bool   = new(bool)
+)
+
+const (
+	handlePrefix string = "/"
 )
 
 func init() {
@@ -75,23 +84,71 @@ func openURI(uri string) {
 	}
 }
 
+// GetUsedIP preferred outbound ip of this machine.
+func GetUsedIP() (string, error) {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	defer conn.Close()
+	if err != nil {
+		return "127.0.0.1", err
+	}
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	return localAddr.IP.String(), nil
+}
+
+// StartGraceServer will start server gracefully.
+func StartGraceServer(srv *http.Server) {
+	go func() {
+		// service connections
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	// SIGTERM:	Termination signal defaultly
+	// SIGINT:	Interrupt from keyboard		= $ kill -2 PID	= CTRL + C
+	// SIGKILL:	Kill signal					= $ kill -9 PID
+	// SIGQUIT:	Quit from keyboard			= CTRL + \
+	// SIGTSTP:	Stop typed at terminal		= CTRL + Z
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL, syscall.SIGQUIT)
+	<-stop
+
+	log.Println("Shutdown Server ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown: ", err)
+	}
+	log.Println("Server shutteddown gracefully")
+}
+
 func main() {
 	flag.Parse()
 	// Obtain absolute folder even in different OS.
-	f, err := filepath.Abs(*folder)
+	fullname, err := filepath.Abs(*folder)
 	if err != nil {
 		log.Fatal(err, "\n")
 	}
+	// Configuration setting for file server.
+	fs := http.StripPrefix(handlePrefix, http.FileServer(http.Dir(fullname)))
+	pt := fmt.Sprintf(":%d", *port)
+	ip, _ := GetUsedIP()
+	mux := http.NewServeMux()
+	srv := &http.Server{
+		Addr: pt,
+	}
+	(*srv).Handler = mux
 
-	h := http.FileServer(http.Dir(f))
-	p := fmt.Sprintf(":%d", *port)
-	fmt.Print("File Server is Started to listen on http://127.0.0.1", p, " for browse ", f, "\nPlease press CTRL + C to finish the file server...\n")
+	// Handle function(s).
+	(*mux).Handle(handlePrefix, fs)
+
 	// If '-b' flag is set, open URI in browser.
 	if *browse == true {
-		go openURI("http://127.0.0.1" + p)
+		go openURI("http://" + ip + pt)
 	}
-	// Start this file server
-	if err = http.ListenAndServe(p, h); err != nil {
-		log.Fatal(err, "\n")
-	}
+
+	// Start file server gracefully.
+	fmt.Print("File Server is Started to listen on http://", ip, pt, " for browse ", fullname, "\nPlease press CTRL + C to finish the file server...\n")
+	StartGraceServer(srv)
 }
