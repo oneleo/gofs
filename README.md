@@ -9,8 +9,7 @@
 
 ## Install
 ```golang
-$> go get -u github.com/oneleo/gofs
-$> go install github.com/oneleo/gofs
+$> go install github.com/oneleo/gofs@latest
 ```
 
 ## Usage
